@@ -669,7 +669,9 @@ router.post("/my-movements-list", async (req, res) => {
         Code: 400,
       });
     }
-    const leaveList = await LeaveDetail.find({ EMPNO, TYPE: "MOVEMENT" });
+    const leaveList = await LeaveDetail.find({ EMPNO, TYPE: "MOVEMENT" }).sort({
+      createdAt: -1,
+    });
     return res.status(200).json({
       Status: "Success",
       Message: "Leave list retrieved successfully",
@@ -1014,7 +1016,7 @@ async function generateTravelId() {
 // generate pdf summary for submitted claim
 router.post("/claim-summary", async (req, res) => {
   try {
-    const { movement_id, EMPNO ,endDate,startDate} = req.body;
+    const { movement_id, EMPNO, endDate, startDate } = req.body;
 
     const result = await TravelDesk.aggregate([
       {
@@ -1132,7 +1134,10 @@ router.post("/claim-summary", async (req, res) => {
       },
     ]);
 
-    console.log(result,"================================&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+    console.log(
+      result,
+      "================================&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
+    );
 
     const summaryData = await generateTravelSummaryPDF(result[0]);
 

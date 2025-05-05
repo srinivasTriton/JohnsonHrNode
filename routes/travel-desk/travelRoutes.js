@@ -503,6 +503,7 @@ router.post("/travel-data", async (req, res) => {
 //         });
 //     }
 // });
+
 router.post("/add-expenses", async (req, res) => {
   try {
     console.log("=========req.body", JSON.stringify(req.body));
@@ -1025,13 +1026,26 @@ router.post("/add-expenses", async (req, res) => {
           "===================== finalApproval ==================="
         );
 
+        const date = new Date();
+        const timestamp = moment(date).format("YY-MM-DD-HH-mm");
+
+      
+        const count = await Expense.countDocuments({
+          seq_no: { $regex: `^${timestamp}` },
+        });
+
+       
+        const increment = String(count + 1).padStart(2, "0"); 
+        const seq_no = `${timestamp}-${increment}`;
+
         const newExpense = new Expense({
           travelId,
           totalAmount,
-          expenses: [validExpenses], // Note: Wrap validExpenses in an array
+          expenses: [validExpenses], 
           expenseDeviationTDA: validTDAExpenses,
           firstApproval,
           finalApproval,
+          seq_no
         });
         await newExpense.save();
         res.json({

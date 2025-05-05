@@ -7,6 +7,7 @@ const ExpenseSchema = new mongoose.Schema({
     ref: "TravelDesk",
     required: true,
   },
+  seq_no:{type:String,default:""},
   totalAmount: { type: Number, required: true },
   description: { type: String },
   city: { type: String },
